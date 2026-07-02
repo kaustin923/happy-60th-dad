@@ -1,0 +1,467 @@
+/* =========================================================================
+   Happy 60th, Dad — Love, Kyle
+   A warm, golf-flavored keepsake card. Mobile + laptop.
+   ========================================================================= */
+
+:root {
+  --green: #1c5a3a;
+  --green-deep: #123f2a;
+  --green-soft: #2f8f5b;
+  --cream: #f7f1e4;
+  --cream-2: #efe6d0;
+  --paper: #fffdf7;
+  --gold: #c19a3e;
+  --gold-soft: #e4c877;
+  --ink: #23302a;
+  --muted: #5f6f64;
+  --shadow: 0 24px 60px -18px rgba(18, 40, 30, 0.55);
+  --shadow-sm: 0 10px 30px -12px rgba(18, 40, 30, 0.45);
+  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua",
+    Georgia, "Times New Roman", serif;
+  --sans: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial,
+    sans-serif;
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+body {
+  min-height: 100svh;
+  font-family: var(--sans);
+  color: var(--ink);
+  background:
+    radial-gradient(1200px 800px at 15% -10%, #1f6b45 0%, transparent 55%),
+    radial-gradient(1000px 700px at 110% 20%, #14472e 0%, transparent 50%),
+    linear-gradient(160deg, #164b30 0%, #0f3a26 55%, #0c3120 100%);
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* faint dotted "fairway" texture */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1.4px);
+  background-size: 22px 22px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.skip {
+  position: absolute;
+  left: -999px;
+  top: 0;
+  background: var(--paper);
+  color: var(--ink);
+  padding: 10px 16px;
+  border-radius: 0 0 10px 0;
+  z-index: 100;
+}
+.skip:focus { left: 0; }
+
+/* ---- Progress bar ------------------------------------------------------- */
+.progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.12);
+  z-index: 40;
+}
+.progress span {
+  display: block;
+  height: 100%;
+  width: 8%;
+  background: linear-gradient(90deg, var(--gold-soft), var(--gold));
+  box-shadow: 0 0 12px rgba(228, 200, 119, 0.6);
+  transition: width 0.5s var(--ease);
+}
+
+/* ---- Deck --------------------------------------------------------------- */
+.deck {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100svh;
+  overflow: hidden;
+  outline: none;
+  touch-action: pan-y;
+}
+
+.track {
+  display: flex;
+  height: 100%;
+  width: 100%;
+  transition: transform 0.65s var(--ease);
+  will-change: transform;
+}
+
+/* ---- Slide -------------------------------------------------------------- */
+.slide {
+  position: relative;
+  flex: 0 0 100%;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(20px, 4vw, 56px);
+  padding: clamp(20px, 4vh, 56px) clamp(18px, 5vw, 72px);
+  padding-top: max(clamp(20px, 4vh, 56px), env(safe-area-inset-top));
+  padding-bottom: max(clamp(70px, 12vh, 110px), env(safe-area-inset-bottom));
+}
+
+/* photo frame — shrink-wraps the image so nothing is ever cropped */
+.photo {
+  margin: 0;
+  flex: 0 0 auto;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #0c2a1c;
+  box-shadow: var(--shadow);
+  position: relative;
+  line-height: 0;
+  border: 6px solid rgba(255, 253, 247, 0.92);
+  transform: translateY(14px) scale(0.985);
+  opacity: 0;
+  transition: transform 0.7s var(--ease) 0.05s, opacity 0.7s var(--ease) 0.05s;
+}
+.photo::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.18);
+  pointer-events: none;
+}
+.photo img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: min(44vw, 460px);
+  max-height: min(74svh, 660px);
+  object-fit: contain;
+  user-select: none;
+}
+
+/* verse card */
+.verse {
+  flex: 0 1 min(52vh, 520px);
+  max-width: 560px;
+  transform: translateY(16px);
+  opacity: 0;
+  transition: transform 0.7s var(--ease) 0.16s, opacity 0.7s var(--ease) 0.16s;
+}
+
+.kicker {
+  font-family: var(--sans);
+  text-transform: uppercase;
+  letter-spacing: 0.28em;
+  font-size: clamp(0.66rem, 1.6vw, 0.78rem);
+  font-weight: 700;
+  color: var(--gold-soft);
+  margin: 0 0 0.9rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6em;
+}
+.kicker::before {
+  content: "";
+  width: 26px;
+  height: 2px;
+  background: var(--gold);
+  display: inline-block;
+}
+
+.poem {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-family: var(--serif);
+  color: #fbf7ec;
+  font-size: clamp(1.18rem, 1rem + 1.6vw, 1.9rem);
+  line-height: 1.55;
+  font-weight: 500;
+  letter-spacing: 0.002em;
+  text-wrap: balance;
+}
+.poem span {
+  display: block;
+  text-shadow: 0 1px 20px rgba(0, 0, 0, 0.25);
+}
+.poem span + span { margin-top: 0.12em; }
+
+/* ---- Hero (open + close) ------------------------------------------------ */
+.slide--open,
+.slide--close { gap: clamp(24px, 5vw, 72px); }
+
+.slide--open .verse,
+.slide--close .verse {
+  text-align: left;
+  flex: 0 1 560px;
+}
+
+.mark {
+  display: flex;
+  align-items: center;
+  gap: 0.35em;
+  color: var(--gold-soft);
+  margin-bottom: 0.4rem;
+}
+.mark .flag {
+  width: clamp(46px, 9vw, 74px);
+  height: clamp(46px, 9vw, 74px);
+  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.35));
+}
+.sixty {
+  font-family: var(--serif);
+  font-weight: 700;
+  font-size: clamp(3.4rem, 12vw, 6.4rem);
+  line-height: 0.9;
+  background: linear-gradient(180deg, #f4e3a8, var(--gold));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  text-shadow: 0 8px 30px rgba(193, 154, 62, 0.25);
+}
+
+.title {
+  font-family: var(--serif);
+  font-weight: 700;
+  color: var(--paper);
+  font-size: clamp(2.5rem, 8vw, 4.6rem);
+  line-height: 1.02;
+  margin: 0.1em 0 0.5rem;
+  letter-spacing: -0.01em;
+}
+.subtitle {
+  font-family: var(--serif);
+  font-style: italic;
+  color: rgba(251, 247, 236, 0.86);
+  font-size: clamp(1.05rem, 0.9rem + 1vw, 1.4rem);
+  line-height: 1.5;
+  margin: 0 0 1.6rem;
+  max-width: 32ch;
+}
+
+.hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  font-family: var(--sans);
+  color: rgba(251, 247, 236, 0.7);
+  font-size: 0.95rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin: 0.2rem 0 0;
+}
+.hint span {
+  color: var(--gold-soft);
+  font-size: 1.3em;
+  animation: nudge 1.5s var(--ease) infinite;
+}
+@keyframes nudge {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(6px); }
+}
+
+.signoff {
+  font-family: "Snell Roundhand", "Apple Chancery", "Segoe Script",
+    "Brush Script MT", var(--serif);
+  font-size: clamp(2rem, 7vw, 3.2rem);
+  color: var(--gold-soft);
+  margin: 0.8rem 0 1.2rem;
+  transform: rotate(-4deg);
+  transform-origin: left center;
+  font-weight: 500;
+}
+
+/* ---- Buttons ------------------------------------------------------------ */
+.cta {
+  appearance: none;
+  border: 0;
+  cursor: pointer;
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: 1rem;
+  letter-spacing: 0.02em;
+  color: var(--green-deep);
+  background: linear-gradient(180deg, #f6e6b4, var(--gold-soft));
+  padding: 0.85em 1.5em;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  box-shadow: var(--shadow-sm);
+  transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease),
+    filter 0.2s var(--ease);
+}
+.cta svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.cta:hover { transform: translateY(-2px); filter: brightness(1.04); }
+.cta:active { transform: translateY(0); }
+.cta--ghost {
+  background: transparent;
+  color: var(--gold-soft);
+  box-shadow: inset 0 0 0 1.5px rgba(228, 200, 119, 0.6);
+}
+
+/* ---- Nav arrows --------------------------------------------------------- */
+.nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 30;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 0;
+  cursor: pointer;
+  background: rgba(255, 253, 247, 0.12);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  color: var(--paper);
+  display: grid;
+  place-items: center;
+  transition: background 0.2s var(--ease), opacity 0.2s var(--ease),
+    transform 0.2s var(--ease);
+}
+.nav svg {
+  width: 24px;
+  height: 24px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.nav:hover { background: rgba(255, 253, 247, 0.24); }
+.nav--prev { left: clamp(8px, 2vw, 26px); }
+.nav--next { right: clamp(8px, 2vw, 26px); }
+.nav:disabled {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* ---- Dots --------------------------------------------------------------- */
+.dots {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: max(16px, env(safe-area-inset-bottom));
+  z-index: 40;
+  display: flex;
+  justify-content: center;
+  gap: 9px;
+  padding: 8px;
+  flex-wrap: wrap;
+}
+.dot {
+  width: 9px;
+  height: 9px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+  background: rgba(255, 253, 247, 0.32);
+  transition: transform 0.25s var(--ease), background 0.25s var(--ease),
+    width 0.25s var(--ease);
+}
+.dot.is-on {
+  background: var(--gold-soft);
+  width: 26px;
+  border-radius: 999px;
+}
+.dot:hover { background: rgba(255, 253, 247, 0.6); }
+
+/* ---- Active-slide entrance animation ------------------------------------ */
+.slide.is-active .photo { transform: translateY(0) scale(1); opacity: 1; }
+.slide.is-active .verse { transform: translateY(0); opacity: 1; }
+
+/* ---- Confetti ----------------------------------------------------------- */
+.confetti {
+  position: fixed;
+  inset: 0;
+  z-index: 20;
+  pointer-events: none;
+}
+
+.noscript {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  padding: 2rem;
+  color: var(--paper);
+  font-size: 1.2rem;
+  z-index: 90;
+}
+
+/* ---- Responsive: stack on narrow / short screens ------------------------ */
+@media (max-width: 860px) {
+  .slide {
+    flex-direction: column;
+    justify-content: center;
+    gap: clamp(16px, 3vh, 30px);
+  }
+  .slide--open,
+  .slide--close { flex-direction: column-reverse; }
+  .photo img {
+    max-width: min(82vw, 360px);
+    max-height: 46svh;
+  }
+  .verse { flex: 0 0 auto; max-width: min(92vw, 540px); text-align: center; }
+  .kicker { justify-content: center; }
+  .slide--open .verse,
+  .slide--close .verse { text-align: center; }
+  .mark { justify-content: center; }
+  .subtitle { margin-left: auto; margin-right: auto; }
+  .signoff { transform-origin: center; text-align: center; }
+  .poem { font-size: clamp(1.12rem, 0.9rem + 2.4vw, 1.55rem); }
+  .nav { width: 44px; height: 44px; }
+  .nav--prev { left: 6px; }
+  .nav--next { right: 6px; }
+}
+
+/* very short landscape phones: shrink photo so verse fits */
+@media (max-height: 520px) and (max-width: 860px) {
+  .slide { flex-direction: row; }
+  .slide--open, .slide--close { flex-direction: row; }
+  .photo img { max-height: 74svh; max-width: 42vw; }
+  .verse { text-align: left; }
+  .kicker { justify-content: flex-start; }
+}
+
+@media (max-width: 380px) {
+  .photo img { max-width: min(76vw, 290px); max-height: 40svh; }
+  .poem { font-size: 1.06rem; line-height: 1.5; }
+}
+
+/* reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  .track,
+  .photo,
+  .verse,
+  .cta,
+  .progress span,
+  .dot { transition: none !important; }
+  .photo,
+  .verse { opacity: 1; transform: none; }
+}

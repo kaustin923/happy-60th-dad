@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#123f2a" />
+  <title>Happy 60th, Dad — Love, Kyle</title>
+  <meta name="description" content="A little birthday poem for the best dad, one photo at a time. Happy 60th! ⛳" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⛳</text></svg>" />
+</head>
+<body>
+  <a class="skip" href="#deck">Skip to card</a>
+
+  <div class="progress" aria-hidden="true"><span id="progressBar"></span></div>
+
+  <main id="deck" class="deck" aria-label="Birthday card slideshow" tabindex="-1">
+    <div class="track" id="track"><!-- slides injected by app.js --></div>
+
+    <button class="nav nav--prev" id="prevBtn" aria-label="Previous">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+    </button>
+    <button class="nav nav--next" id="nextBtn" aria-label="Next">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+    </button>
+  </main>
+
+  <nav class="dots" id="dots" aria-label="Slide navigation"></nav>
+
+  <canvas id="confetti" class="confetti" aria-hidden="true"></canvas>
+
+  <noscript>
+    <div class="noscript">This birthday card needs JavaScript enabled to play the slideshow. 💚</div>
+  </noscript>
+
+  <script src="app.js"></script>
+</body>
+</html>
